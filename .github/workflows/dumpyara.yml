@@ -38,4 +38,4 @@ jobs:
         run: |
           cd dumpyara
           chmod +x dumpyara.sh
-          ./dumpyara.sh "$LINK" "${{ secrets.GIT_TOKEN }}"
+          sudo ./dumpyara.sh "$LINK" "${{ secrets.GIT_TOKEN }}"
