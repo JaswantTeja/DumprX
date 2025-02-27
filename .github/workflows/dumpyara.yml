@@ -1,0 +1,41 @@
+name: Dumpyara Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      link:
+        description: 'Firmware Link (OTA URL or file path)'
+        required: true
+
+env:
+  LINK: ${{ github.event.inputs.link }}
+  TZ: Asia/Kolkata
+
+jobs:
+  Firmware-Dump:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Clone Dumpyara Repository
+        run: git clone https://github.com/AndroidDumps/dumpyara.git dumpyara
+
+      - name: Cleanup Space
+        uses: rokibhasansagar/slimhub_actions@main
+
+      - name: Install Requirements
+        run: |
+          cd dumpyara
+          chmod +x setup.sh
+          ./setup.sh
+
+      - name: Configure GitHub Token
+        run: echo "${{ secrets.GIT_TOKEN }}" > dumpyara/.githubtoken
+
+      - name: Firmware Dumping
+        run: |
+          cd dumpyara
+          chmod +x dumpyara.sh
+          ./dumpyara.sh "$LINK" "${{ secrets.GIT_TOKEN }}"
